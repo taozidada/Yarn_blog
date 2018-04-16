@@ -30,7 +30,7 @@ GitHub Pages也非常乐意，大家在上面搭建博客。
 # Hexo搭建
 
 Hexo环境搭建，会依赖较多的工具。安装的过程也会出现各种各样的错误，根据错误在网上搜一下，见招拆招，基本能顺利解决问题。
-### 安装RVM和Ruby
+## 安装RVM和Ruby
 
 RVM 是一个命令行工具，可以提供一个便捷的多版本 Ruby 环境的管理和切换
 
@@ -81,7 +81,7 @@ rvm remove 1.8.7
 
 RVM的安装主要是为了控制Ruby的版本，我此次使用的Ruby版本是最新的2.4.1，如果安装遇到困难的可以查看[这里](https://ruby-china.org/wiki/rvm-guide)。
 
-### 安装Node和npm
+## 安装Node和npm
 
 在安装Ruby过程中，系统会自动安装Homebrew，因此直接可以用Homebrew来安装Node。
 
@@ -94,7 +94,7 @@ brew install node
 node -v
 npm -v
 ```
-### 安装Hexo
+## 安装Hexo
 
 [Hexo](https://hexo.io)的安装很简单，官方网站给出的安装方式：
 
@@ -109,9 +109,11 @@ hexo server
 这样Hexo的环境已经搭建完成，并且blog这个文件夹就是一个简单的demo。执行过`hexo server`后就能用浏览器通过`http://localhost:4000/`来访问自己的博客页了。
 
 
+
 # 撰写博文
 
-### 新建博文
+
+## 新建博文
 完成以上步骤之后，可以预览到自己的博客效果了，接下来我比较关心的是如何新建文章。新建文章有个要注意的地方是，不能直接把普通.md拖进`_post`目录下，是会报错的。
 
 ```highlight shell
@@ -125,7 +127,7 @@ hexo server
 在blog的根目录下，`_config.yml`文件比较重要，主要是对Hexo的配置以及站点的相关配置。
 
 
-### 博文图片
+## 博文图片
 
 关于博文图片，网上很多例子都是推荐七牛云，通过贴链接的方式，把图片加在博文中。我这里推荐将图片放在本地。
 
@@ -143,15 +145,59 @@ hexo server
 
 最后自己验证一下能否正确加载即可。
 
+
 # 更换主题
+
 
 Hexo的主题相当于是博客的模板，在Hexo官网的[Themes](https://hexo.io/themes/)中，找到很多模板，可以选择喜欢的进行fork。有些还有中文文档，对英文不是很好的人（比如我）来说很友好。
 
 我这边使用的是[tutuge](http://tutuge.me)博客应用的Hexo主题[raytaylorism](https://github.com/raytaylorlin/hexo-theme-raytaylorism)。主题配置是中文文档，非常简单，大家按照步骤基本可以配置完成。
 
 
+# 远程部署
 
-# 扩展阅读
+在之前，已经建立了一个`yourusername.github.io`的仓库了，接下来要通过远程部署来完成用`https://yourusername.github.io` 直接访问你的博客。
+
+现在我们需要_config.yml文件，来建立关联，命令：
+
+```highlight shell
+vim _config.yml
+```
+
+翻到最下面，改成我这样子的
+
+```highlight shell
+deploy:
+
+	type: git
+
+ 	repo: https://github.com/yourusername.github.io/yourusername.github.io.github.io.git
+
+ 	branch: master
+```
+
+
+然后执行命令：
+
+
+```highlight shell
+hexo d -g
+```
+
+就可以把自己的博客部署到GitHub Pages了，这个操作是有延迟的，一般要等几分钟才能通过`https://yourusername.github.io`访问查看到效果，不能太心急。
+
+如果配置过程中遇到SSH Key的问题，请参考网上的[教程](https://blog.csdn.net/qq_35246620/article/details/69061355?locationNum=11&fps=1)。
+
+自己的博客源码，可以再建一个Github仓库用来管理，`yourusername.github.io`只能用来部署自己的博客。
+
+
+#  总结
+
+使用Hexo + GitHub Pages搭建个人博客可以说是简单快捷，0成本，本文也没有写的特别详细，一些简单的坑通过搜索还是可以快速解决的。这也是我搭建完个人博客后的第一篇文章，不足之处，希望大家多多指点。
+
+
+#  扩展阅读
+
 [1] [一步步在GitHub上创建博客主页](http://www.pchou.info/ssgithubPage/2013-01-03-build-github-blog-page-01.html)
 
 [2][GitHub Pages](https://pages.github.com)
