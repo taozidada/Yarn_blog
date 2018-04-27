@@ -9,7 +9,7 @@ tags:
 
 
 我在2015年的时候，就尝试写博客，当时是在CSDN注册的账号，更新了几篇之后，由于懒，就没再更新了。现在连账号都找不到了，囧。最近突发奇想，觉得搞一个博客，积累一下平时学习的知识，也蛮好的。于是就有了这篇博客，分享一下我的搭建个人博客的经历。
-
+<!-- more -->
 
 # 方案选择
 网上有各种各样的搭建个人博客的方式，最初我是选则GitHub Pages + Jekyll的方案，后来搜了一下Jekyll的主题，感觉不是很美丽（如想使用Jekyll可以参考[一步步在GitHub上创建博客主页](http://www.pchou.info/ssgithubPage/2013-01-03-build-github-blog-page-01.html) 。最终选择了Hexo + GitHub Pages的方案，而且不需要购买域名，可以说是零成本。
@@ -34,7 +34,7 @@ Hexo环境搭建，会依赖较多的工具。安装的过程也会出现各种�
 
 RVM 是一个命令行工具，可以提供一个便捷的多版本 Ruby 环境的管理和切换
 
-```highlight shell
+```highlight 
 $ \curl -sSL https://get.rvm.io | bash -s stable
 $ source ~/.bashrc
 $ source ~/.bash_profile
@@ -43,13 +43,13 @@ $ source ~/.bash_profile
 
 列出已知的 Ruby 版本
 
-```highlight shell
+```highlight 
 rvm list known
 ```
 
 安装一个 Ruby 版本
 
-```highlight shell
+```highlight
 rvm install 2.2.0 --disable-binary
 ```
 
@@ -57,25 +57,25 @@ rvm install 2.2.0 --disable-binary
 
 切换 Ruby 版本
 
-```highlight shell
+```highlight 
 rvm use 2.2.0
 ```
 
 如果想设置为默认版本，这样一来以后新打开的控制台默认的 Ruby 就是这个版本
 
-```highlight shell
+```highlight 
 rvm use 2.2.0 --default 
 ```
 
 查询已经安装的ruby
 
-```highlight shell
+```highlight 
 rvm list
 ```
 
 卸载一个已安装版本
 
-```highlight shell
+```highlight 
 rvm remove 1.8.7
 ```
 
@@ -85,12 +85,12 @@ RVM的安装主要是为了控制Ruby的版本，我此次使用的Ruby版本是
 
 在安装Ruby过程中，系统会自动安装Homebrew，因此直接可以用Homebrew来安装Node。
 
-```highlight shell
+```highlight
 brew install node
 ```
 执行以下命令查看是否安装成功
 
-```highlight shell
+```highlight 
 node -v
 npm -v
 ```
@@ -98,7 +98,7 @@ npm -v
 
 [Hexo](https://hexo.io)的安装很简单，官方网站给出的安装方式：
 
-```highlight shell
+```highlight 
 npm install hexo-cli -g
 hexo init blog
 cd blog
@@ -116,7 +116,7 @@ hexo server
 ## 新建博文
 完成以上步骤之后，可以预览到自己的博客效果了，接下来我比较关心的是如何新建文章。新建文章有个要注意的地方是，不能直接把普通.md拖进`_post`目录下，是会报错的。
 
-```highlight shell
+```highlight 
  hexo new hello-test    # 格式是： hexo new ｛文章名｝
 ```
 
@@ -160,13 +160,13 @@ Hexo的主题相当于是博客的模板，在Hexo官网的[Themes](https://hexo
 
 现在我们需要_config.yml文件，来建立关联，命令：
 
-```highlight shell
+```highlight 
 vim _config.yml
 ```
 
 翻到最下面，改成我这样子的
 
-```highlight shell
+```highlight 
 deploy:
 
 	type: git
@@ -180,7 +180,7 @@ deploy:
 然后执行命令：
 
 
-```highlight shell
+```highlight 
 hexo d -g
 ```
 
