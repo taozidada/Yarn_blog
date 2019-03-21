@@ -3,6 +3,25 @@
   
     
     <entry>
+      <title>VSCode中Flow报错解决</title>
+      <link href="/2019/03/20/VSCode%E4%B8%ADFlow%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3/"/>
+      <url>/2019/03/20/VSCode%E4%B8%ADFlow%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3/</url>
+      <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在学习RN的使用，实在受不了webstorm的性能，IDE换成了VS Code，对于我这种渣渣电脑，至少用起来不卡了，还有很多插件，非常方便，好评！<br><a id="more"></a></p><h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>在用到带参数的指定类型的方法时，比如<code>_onPressItem = (id: string) =&gt;</code>，VSCode会报错<code>[js] &#39;types&#39; can only be used in a .ts file</code>。<br><img src="/2019/03/20/VSCode中Flow报错解决/problem1.png" alt="测试图片"><br>虽然不影响程序的运行，但是这个正确的写法，报什么错呢？</p><h1 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h1><p>这个问题其实归结于是VSCode使用Flow的bug，在VSCode的issue里，开发者建议我们使用一个叫<a href="https://marketplace.visualstudio.com/items?itemName=flowtype.flow-for-vscode" target="_blank" rel="noopener">Flow Language Support</a>的插件，使用后发现并没有解决，还会报Flow版本不匹配的错误，遂放弃，继续寻找到一个新的插件<a href="https://marketplace.visualstudio.com/items?itemName=gcazaciuc.vscode-flow-ide#overview" target="_blank" rel="noopener">vscode-flow-ide</a>,但是安装完成后，发现错误还在。</p><p>在Stack Overflow和各种issue中寻找了很久，一般都是给两条路子：</p><p>1 安装插件，例如<code>Flow Language Support</code>，<code>vscode-flow-ide</code>推荐后者。<br>2 在VSCode中设置</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;typescri.validate.enable&quot;: false,</span><br><span class="line">&quot;javascript.validate.enable&quot;: false,</span><br></pre></td></tr></table></figure><p>PS：像我这种小白根本找不到VSCode中哪里能设置这个，大家都没写，搜了半天，最后在<code>Code-&gt;Preferences-&gt;Settings</code>中搜索，才找到<code>settings.json</code>这个文件，路径是<code>/Users/你的计算机名/Library/Application Support/Code/User/settings.jsonpt</code>。</p><p>最后尝试后，我是两条都用了，才解决,希望能帮到你们。</p><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p>[1] <a href="https://segmentfault.com/a/1190000008088489" target="_blank" rel="noopener">Flow - JS静态类型检查工具</a></p><p>[2]<a href="https://github.com/jstwister/vscode-flow-ide" target="_blank" rel="noopener">jstwister/vscode-flow-ide</a></p><p>[3]<a href="https://stackoverflow.com/questions/42632215/how-to-disable-typescript-warnings-in-vscode/42633555#42633555" target="_blank" rel="noopener">How to disable TypeScript warnings in VSCode?</a></p>]]></content>
+      
+      
+        <tags>
+            
+            <tag> VSCode </tag>
+            
+            <tag> ReactNative </tag>
+            
+            <tag> Flow </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>Hexo+Github Pages博客搭建</title>
       <link href="/2018/04/11/Hexo+github%20Pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/"/>
       <url>/2018/04/11/Hexo+github%20Pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</url>
