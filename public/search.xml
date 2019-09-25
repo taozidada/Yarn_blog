@@ -3,6 +3,25 @@
   
     
     <entry>
+      <title>Jenkins+iOS持续集成细节记录</title>
+      <link href="/2019/04/24/Jenkins-iOS%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E7%BB%86%E8%8A%82%E8%AE%B0%E5%BD%95/"/>
+      <url>/2019/04/24/Jenkins-iOS%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E7%BB%86%E8%8A%82%E8%AE%B0%E5%BD%95/</url>
+      <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>iOS持续集成采用Jenkins已经是一个非常成熟的方案了，以前公司用过，自己还没尝试搭建过，这次尝试了一下，踩了很多坑，网上的很多文章都是早些年的，都9102年了，Jenkins也有了很多变化，Xcode也是10.x版本了。我分享一下我个人觉得要注意的细节。</p><a id="more"></a><h1 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h1><ul><li>系统版本：macOS Mojave 10.14.4 (18E226)</li><li>Xcode版本：Version 10.1 (10B61)</li><li>Jenkins版本：Jenkins ver. 2.164.2</li></ul><p>我的项目集成了cocoapods和2个Project，其中一个Project用了Git的submodule。</p><h1 id="开始搭建"><a href="#开始搭建" class="headerlink" title="开始搭建"></a>开始搭建</h1><p>Jenkins下载安装，完成后打开Jenkins的界面，下载一些插件，新建一个空的任务。接下来开始配置，配置我是分三步：1、下载源码 2、配置证书和打包选项 3、上传ipa。</p><h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>源码我使用的是Git，代码放在gitee，其实放哪都是类似的。设置Repository URL和SSH，如果配置错误的话，界面会一直报错。Submodule的配置，需要勾选上<br><code>Additional Behaviours</code><br><img src="/2019/04/24/Jenkins-iOS持续集成细节记录/yuanma1.png" alt="Submodule"><br>其中第二项的意思是submodule的验证跟主项目一致，我的项目是一致的，可以勾上，若不是的话，需要在想办法，这里没有在深入研究。</p><p>cocoapods的话需要在构建中加入shell</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> export LC_ALL=en_US.UTF-8</span><br><span class="line">/usr/local/bin/pod install --verbose --no-repo-update</span><br></pre></td></tr></table></figure><p>可以先尝试一下构建，如果成功。建议去<code>工作空间</code>，找到项目所在的目录,把整个项目复制出来，自己先编译一下，是否能编译过。</p><p>注意：</p><ul><li>源码SSH一定要切换到jenkens账户，否则一直报错，参考<a href="https://www.jianshu.com/p/ed0edb93e234" target="_blank" rel="noopener">指定Git源代码时提示无权限</a></li><li>当时我配置URL clone的方式，怎么都会报错，后来换成SSH就OK了。</li><li><code>export LC_ALL=en_US.UTF-8</code>这句话得加，否则会报错</li></ul><h2 id="配置证书和打包选项"><a href="#配置证书和打包选项" class="headerlink" title="配置证书和打包选项"></a>配置证书和打包选项</h2><p>配置证书比较繁琐，首先去<code>JenkinsKeychains and Provisioning Profiles Management</code>上传本机的keychain和Provisioning Profiles，这个网上有教程，可以<a href="https://www.jianshu.com/p/70e4335b0bd6" target="_blank" rel="noopener">参考一下</a>,这里介绍的比较详细。Provisioning Profiles拿到的都是UUID的文件名，可以去用xcode打开项目，build settings，搜索profiles，就能找到对应的UUID，上传即可。<br>添加完后，再到回到<code>刚建的任务-设置-构建-增加构建步骤</code>，新增一个xcode，开始配置xcode。</p><p>第一项<code>General build settings</code> ：<code>Development Team ID</code>这一项，如果不知道从哪里查的话，先用自己的xcode打个包，导出ipa的文件目录中有<code>ExportOptions.plist</code>中的<code>team id</code>。<br>把<code>Generate Archive?</code>设置为<code>YES</code>,又会多出很多选项，<code>Output directory</code>建议是<code>${WORKSPACE}/Build</code>,如果不在workspace的话，会报错。</p><p>第二项<code>Code signing &amp; OS X keychain options</code>：我一开配置好的，然后选<code>Read from Xcode Project</code>，一直都是失败，建议不要勾选这个选项。勾选<code>Manual signing</code>和<code>Unlock Keychain?</code>把该选的选上，<code>Keychain password</code>就是本机的登录密码。</p><p>第三项<code>Advanced Xcode build options</code>：这个也比较简单，如果项目是workspace，直接在<code>Xcode Workspace File</code>填上workspace的路径就行了，注意不需要填后缀。但是建议还是把其他选项都填上，其中<code>Xcode Project Directory</code>会影响第四项的配置，不填的话，会找不到info.plist，导致无法更改<code>CFBundleVersion</code>。</p><p>第四项<code>Versioning</code>：这一项是用于每次构建，动态变更build number的，一般在<code>Technical version</code>填上<code>${BUILD_ID}</code>。</p><p>配置完成后，可以构建一下，看看能不能成功。如果失败的话，可以查看一下原因，或者仿照第一步拉源码，把项目拷出来，用xcodebuild尝试打包，确保自己的项目是可以打包的，再查找Jenkins配置的问题。</p><h2 id="上传ipa"><a href="#上传ipa" class="headerlink" title="上传ipa"></a>上传ipa</h2><p>这一部非常简单，我使用的是蒲公英，<a href="https://www.pgyer.com/doc/view/jenkins_ios" target="_blank" rel="noopener">使用 Jenkins 实现持续集成 (iOS)</a>,先去Jenkins插件下一个<code>Upload to pgyer</code>,再到<code>刚建的任务-设置-构建-增加构建步骤</code>，增加一个<code>Upload to pgyer with api v2</code>，<code>pgyer api_key</code>可以在蒲公英官网找到，<code>scandir</code>就是ipa所在的目录，<code>file wildcard</code>是指ipa的文件通配符，注意不是文件的全程，如果目录下只有一个ipa，使用<code>*.ipa</code>即可。</p><h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>每个人的环境和需求都不一样，如果配置过程中出了问题，一定要多看控制台输出，看看哪里报错，报错的原因是什么，错误信息还是比较详细的，一步一步解决。</p>]]></content>
+      
+      
+        <tags>
+            
+            <tag> Jenkins </tag>
+            
+            <tag> iOS </tag>
+            
+            <tag> 持续集成 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>VSCode中Flow报错解决</title>
       <link href="/2019/03/20/VSCode%E4%B8%ADFlow%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3/"/>
       <url>/2019/03/20/VSCode%E4%B8%ADFlow%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3/</url>
